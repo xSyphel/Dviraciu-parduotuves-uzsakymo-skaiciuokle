@@ -82,6 +82,20 @@ double nuolaida(double suma, int kiekis)
         return 0;
 }
 
+double kategorijosSuma(string kategorijos[], double kainos[], int kiekiai[], int n, string kategorija)
+{
+    double suma = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (kategorijos[i] == kategorija)
+        {
+            double s = eilutesSuma(kainos[i], kiekiai[i]);
+            suma += s - nuolaida(s, kiekiai[i]);
+        }
+    }
+    return suma;
+}
+
 void spausdintiPrekes(ostream &out, string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[], int n, string kategorija)
 {
     out << fixed << setprecision(2);
@@ -102,6 +116,18 @@ void spausdintiPrekes(ostream &out, string kategorijos[], string pavadinimai[], 
         }
     }
     out << string(112, '-') << endl;
+}
+
+void spausdintiKategorijuSumas(ostream &out, string kategorijos[], double kainos[], int kiekiai[], int n)
+{
+    string pav[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
+
+    out << fixed << setprecision(2);
+    for (int k = 0; k < 3; k++)
+    {
+        out << left << setw(30) << pav[k] + ":" << right << setw(12)
+            << kategorijosSuma(kategorijos, kainos, kiekiai, n, pav[k]) << " Eur" << endl;
+    }
 }
 
 int ivestiPasirinkima(int nuo, int iki)
@@ -128,6 +154,35 @@ int ivestiPasirinkima(int nuo, int iki)
             return x;
         }
     }
+}
+
+void rodytiKategorija(string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[], int n)
+{
+    string pav[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
+
+    cout << "1. Dviraciai" << endl;
+    cout << "2. Dalys" << endl;
+    cout << "3. Aksesuarai" << endl;
+    string kategorija = pav[ivestiPasirinkima(1, 3) - 1];
+    cout << endl;
+
+    int kiek = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (kategorijos[i] == kategorija)
+            kiek++;
+    }
+
+    if (kiek == 0)
+    {
+        cout << "Kategorijoje " << kategorija << " prekiu nera" << endl;
+        return;
+    }
+
+    spausdintiPrekes(cout, kategorijos, pavadinimai, kainos, kiekiai, n, kategorija);
+    cout << fixed << setprecision(2);
+    cout << "Kategorijos " << kategorija << " moketina suma: "
+         << kategorijosSuma(kategorijos, kainos, kiekiai, n, kategorija) << " Eur" << endl;
 }
 
 int main()
@@ -165,13 +220,13 @@ int main()
             spausdintiPrekes(cout, kategorijos, pavadinimai, kainos, kiekiai, n, "");
             break;
         case 2:
-            cout << "Dar nepadaryta" << endl;
+            rodytiKategorija(kategorijos, pavadinimai, kainos, kiekiai, n);
             break;
         case 3:
             cout << "Dar nepadaryta" << endl;
             break;
         case 4:
-            cout << "Dar nepadaryta" << endl;
+            spausdintiKategorijuSumas(cout, kategorijos, kainos, kiekiai, n);
             break;
         case 5:
             cout << "Dar nepadaryta" << endl;
@@ -180,7 +235,7 @@ int main()
             cout << "Dar nepadaryta" << endl;
             break;
         case 7:
-            cout << "iseiti" << endl;
+            cout << "Viso gero!" << endl;
             break;
         }
     } while (pasirinkimas != 7);
