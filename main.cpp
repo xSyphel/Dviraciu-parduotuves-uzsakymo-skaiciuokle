@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -68,6 +69,67 @@ int nuskaitytiDuomenis(string failas, string kategorijos[], string pavadinimai[]
     return n;
 }
 
+double eilutesSuma(double kaina, int kiekis)
+{
+    return kaina * kiekis;
+}
+
+double nuolaida(double suma, int kiekis)
+{
+    if (kiekis >= 10)
+        return suma * 0.1;
+    else
+        return 0;
+}
+
+void spausdintiPrekes(ostream &out, string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[], int n, string kategorija)
+{
+    out << fixed << setprecision(2);
+    out << left << setw(12) << "Kategorija" << setw(47) << "Pavadinimas"
+        << right << setw(10) << "Kaina" << setw(8) << "Kiekis" << setw(12) << "Suma"
+        << setw(11) << "Nuolaida" << setw(12) << "Moketi" << endl;
+    out << string(112, '-') << endl;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (kategorija == "" || kategorijos[i] == kategorija)
+        {
+            double suma = eilutesSuma(kainos[i], kiekiai[i]);
+            double nuol = nuolaida(suma, kiekiai[i]);
+            out << left << setw(12) << kategorijos[i] << setw(47) << pavadinimai[i]
+                << right << setw(10) << kainos[i] << setw(8) << kiekiai[i] << setw(12) << suma
+                << setw(11) << nuol << setw(12) << suma - nuol << endl;
+        }
+    }
+    out << string(112, '-') << endl;
+}
+
+int ivestiPasirinkima(int nuo, int iki)
+{
+    int x;
+    while (true)
+    {
+        cout << "Pasirinkite (" << nuo << "-" << iki << "): ";
+        cin >> x;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Reikia ivesti skaiciu!" << endl;
+        }
+        else if (x < nuo || x > iki)
+        {
+            cin.ignore(1000, '\n');
+            cout << "Tokio pasirinkimo nera!" << endl;
+        }
+        else
+        {
+            cin.ignore(1000, '\n');
+            return x;
+        }
+    }
+}
+
 int main()
 {
     string kategorijos[MAX];
@@ -78,13 +140,50 @@ int main()
     int n = nuskaitytiDuomenis("uzsakymas.txt", kategorijos, pavadinimai, kainos, kiekiai);
     if (n == 0)
     {
-        cout << "Programa daro stop" << endl;
+        cout << "Programa baigia darba" << endl;
         return 0;
     }
     cout << "Nuskaityta prekiu: " << n << endl;
 
-    for (int i = 0; i < n; i++)
-        cout << kategorijos[i] << " | " << pavadinimai[i] << " | " << kainos[i] << " | " << kiekiai[i] << endl;
+    int pasirinkimas;
+    do
+    {
+        cout << endl;
+        cout << "1. Perziureti visas uzsakymo prekes" << endl;
+        cout << "2. Perziureti pasirinktos kategorijos prekes" << endl;
+        cout << "3. Perziureti viso uzsakymo sumas" << endl;
+        cout << "4. Perziureti sumas pagal kategorijas" << endl;
+        cout << "5. Parodyti visa uzsakymo ataskaita" << endl;
+        cout << "6. Issaugoti visa ataskaita i faila" << endl;
+        cout << "7. Iseiti" << endl;
+        pasirinkimas = ivestiPasirinkima(1, 7);
+        cout << endl;
+
+        switch (pasirinkimas)
+        {
+        case 1:
+            spausdintiPrekes(cout, kategorijos, pavadinimai, kainos, kiekiai, n, "");
+            break;
+        case 2:
+            cout << "Dar nepadaryta" << endl;
+            break;
+        case 3:
+            cout << "Dar nepadaryta" << endl;
+            break;
+        case 4:
+            cout << "Dar nepadaryta" << endl;
+            break;
+        case 5:
+            cout << "Dar nepadaryta" << endl;
+            break;
+        case 6:
+            cout << "Dar nepadaryta" << endl;
+            break;
+        case 7:
+            cout << "iseiti" << endl;
+            break;
+        }
+    } while (pasirinkimas != 7);
 
     return 0;
 }
