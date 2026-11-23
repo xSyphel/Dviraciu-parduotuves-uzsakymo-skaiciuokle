@@ -82,6 +82,22 @@ double nuolaida(double suma, int kiekis)
         return 0;
 }
 
+double sumaPriesNuolaidas(double kainos[], int kiekiai[], int n)
+{
+    double suma = 0;
+    for (int i = 0; i < n; i++)
+        suma += eilutesSuma(kainos[i], kiekiai[i]);
+    return suma;
+}
+
+double visosNuolaidos(double kainos[], int kiekiai[], int n)
+{
+    double suma = 0;
+    for (int i = 0; i < n; i++)
+        suma += nuolaida(eilutesSuma(kainos[i], kiekiai[i]), kiekiai[i]);
+    return suma;
+}
+
 double kategorijosSuma(string kategorijos[], double kainos[], int kiekiai[], int n, string kategorija)
 {
     double suma = 0;
@@ -118,6 +134,17 @@ void spausdintiPrekes(ostream &out, string kategorijos[], string pavadinimai[], 
     out << string(112, '-') << endl;
 }
 
+void spausdintiSumas(ostream &out, double kainos[], int kiekiai[], int n)
+{
+    double pries = sumaPriesNuolaidas(kainos, kiekiai, n);
+    double nuol = visosNuolaidos(kainos, kiekiai, n);
+
+    out << fixed << setprecision(2);
+    out << left << setw(30) << "Suma pries nuolaidas:" << right << setw(12) << pries << " Eur" << endl;
+    out << left << setw(30) << "Nuolaidu suma:" << right << setw(12) << nuol << " Eur" << endl;
+    out << left << setw(30) << "Moketina suma:" << right << setw(12) << pries - nuol << " Eur" << endl;
+}
+
 void spausdintiKategorijuSumas(ostream &out, string kategorijos[], double kainos[], int kiekiai[], int n)
 {
     string pav[3] = {"Dviraciai", "Dalys", "Aksesuarai"};
@@ -128,6 +155,17 @@ void spausdintiKategorijuSumas(ostream &out, string kategorijos[], double kainos
         out << left << setw(30) << pav[k] + ":" << right << setw(12)
             << kategorijosSuma(kategorijos, kainos, kiekiai, n, pav[k]) << " Eur" << endl;
     }
+}
+
+void spausdintiAtaskaita(ostream &out, string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[], int n)
+{
+    out << "========== UZSAKYMO ATASKAITA ==========" << endl << endl;
+    out << "Prekes:" << endl;
+    spausdintiPrekes(out, kategorijos, pavadinimai, kainos, kiekiai, n, "");
+    out << endl << "Viso uzsakymo sumos:" << endl;
+    spausdintiSumas(out, kainos, kiekiai, n);
+    out << endl << "Sumos pagal kategorijas (po nuolaidu):" << endl;
+    spausdintiKategorijuSumas(out, kategorijos, kainos, kiekiai, n);
 }
 
 int ivestiPasirinkima(int nuo, int iki)
@@ -223,13 +261,13 @@ int main()
             rodytiKategorija(kategorijos, pavadinimai, kainos, kiekiai, n);
             break;
         case 3:
-            cout << "Dar nepadaryta" << endl;
+            spausdintiSumas(cout, kainos, kiekiai, n);
             break;
         case 4:
             spausdintiKategorijuSumas(cout, kategorijos, kainos, kiekiai, n);
             break;
         case 5:
-            cout << "Dar nepadaryta" << endl;
+            spausdintiAtaskaita(cout, kategorijos, pavadinimai, kainos, kiekiai, n);
             break;
         case 6:
             cout << "Dar nepadaryta" << endl;
