@@ -168,6 +168,24 @@ void spausdintiAtaskaita(ostream &out, string kategorijos[], string pavadinimai[
     spausdintiKategorijuSumas(out, kategorijos, kainos, kiekiai, n);
 }
 
+void issaugotiAtaskaita(string failas, string kategorijos[], string pavadinimai[], double kainos[], int kiekiai[], int n)
+{
+    ofstream fout(failas);
+    if (!fout)
+    {
+        cout << "Nepavyko sukurti failo " << failas << endl;
+        return;
+    }
+
+    spausdintiAtaskaita(fout, kategorijos, pavadinimai, kainos, kiekiai, n);
+    fout.close();
+
+    if (fout.fail())
+        cout << "Nepavyko irasyti ataskaitos i faila" << endl;
+    else
+        cout << "Ataskaita issaugota faile " << failas << endl;
+}
+
 int ivestiPasirinkima(int nuo, int iki)
 {
     int x;
@@ -270,10 +288,10 @@ int main()
             spausdintiAtaskaita(cout, kategorijos, pavadinimai, kainos, kiekiai, n);
             break;
         case 6:
-            cout << "Dar nepadaryta" << endl;
+            issaugotiAtaskaita("ataskaita.txt", kategorijos, pavadinimai, kainos, kiekiai, n);
             break;
         case 7:
-            cout << "Viso gero!" << endl;
+            cout << "Bye bye" << endl;
             break;
         }
     } while (pasirinkimas != 7);
